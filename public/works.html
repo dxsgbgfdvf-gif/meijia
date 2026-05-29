@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="奶油指尖美甲工作室作品展示，查看近期美甲款式与风格灵感" />
+  <title>作品展示 · 奶油指尖</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=M+PLUS+Rounded+1c:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body class="has-contact-dock has-fixed-cta">
+  <div class="bg-blobs" aria-hidden="true">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="/" class="logo" data-setting="store_name">奶油指尖</a>
+      <nav>
+        <a href="/" class="nav-link">首页</a>
+        <a href="/works.html" class="nav-link active">作品</a>
+        <a href="/booking.html" class="nav-link">预约</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container works-page">
+    <section class="works-hero">
+      <div class="hero-badge">近期作品 · 可带图沟通</div>
+      <h1>作品展示</h1>
+      <p data-setting="works_intro">挑一个喜欢的氛围，也可以上传参考图，让款式更接近你想要的感觉。</p>
+      <a href="/booking.html" class="btn-primary">预约同款 ✦</a>
+    </section>
+
+    <section class="section">
+      <div class="section-title">
+        <h2>风格灵感</h2>
+        <span class="subtitle">实际价格以款式复杂度为准</span>
+      </div>
+
+      <div class="works-grid" id="works-grid">
+        <article class="work-card work-card-photo">
+          <div class="work-cover">
+            <img src="/uploads/5/ref-1.jpg" alt="奶油风美甲作品" loading="lazy" />
+          </div>
+          <div class="work-info">
+            <span class="work-tag">温柔奶油</span>
+            <h3>柔雾奶油款</h3>
+            <p>适合日常通勤、约会和偏温柔的穿搭。</p>
+          </div>
+        </article>
+
+        <article class="work-card">
+          <div class="work-cover work-art work-art-milk">
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+          <div class="work-info">
+            <span class="work-tag">纯欲显白</span>
+            <h3>裸粉猫眼</h3>
+            <p>低调但有光泽感，手部会显得干净细长。</p>
+          </div>
+        </article>
+
+        <article class="work-card">
+          <div class="work-cover work-art work-art-french">
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+          <div class="work-info">
+            <span class="work-tag">法式</span>
+            <h3>细边法式</h3>
+            <p>经典耐看，适合第一次尝试款式的顾客。</p>
+          </div>
+        </article>
+
+        <article class="work-card">
+          <div class="work-cover work-art work-art-flower">
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+          <div class="work-info">
+            <span class="work-tag">小花</span>
+            <h3>碎花氛围款</h3>
+            <p>甜美但不夸张，春夏和浅色穿搭很搭。</p>
+          </div>
+        </article>
+
+        <article class="work-card">
+          <div class="work-cover work-art work-art-coffee">
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+          <div class="work-info">
+            <span class="work-tag">秋冬</span>
+            <h3>焦糖晕染</h3>
+            <p>暖调显气质，适合秋冬、拍照和复古风。</p>
+          </div>
+        </article>
+
+        <article class="work-card">
+          <div class="work-cover work-art work-art-pearl">
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+          <div class="work-info">
+            <span class="work-tag">精致款</span>
+            <h3>珍珠闪钻</h3>
+            <p>细节更丰富，适合生日、旅行和重要场合。</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="rules-card works-note">
+        <p>喜欢某个风格，可以在预约备注里写作品名称；也可以上传自己的参考图，店主会通过微信进一步确认款式和报价。</p>
+      </div>
+    </section>
+  </main>
+
+  <aside class="contact-dock" id="booking-contact-fixed">
+    <div class="contact-dock-sticker sticker-heart" aria-hidden="true">❤</div>
+    <div class="contact-dock-sticker sticker-star" aria-hidden="true">✦</div>
+    <div class="contact-dock-head">
+      <strong data-setting="contact_title">有问题直接联系我</strong>
+    </div>
+    <div class="contact-dock-body">
+      <div class="contact-dock-qr-wrap">
+        <img id="contact-qr-image" class="contact-dock-qr" alt="微信好友码" hidden />
+      </div>
+      <div class="contact-dock-text">
+        <div>微信：<span data-setting="contact_wechat">-</span></div>
+        <div>电话：<span data-setting="contact_phone">-</span></div>
+        <div class="contact-dock-note" data-setting="contact_note">有需要的话可以直接联系我哦</div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="fixed-cta">
+    <a href="/booking.html" class="btn-primary">去预约 ✦</a>
+  </div>
+  <script src="/js/site-settings.js"></script>
+  <script src="/js/works.js"></script>
+</body>
+</html>

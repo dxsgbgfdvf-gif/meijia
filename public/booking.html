@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>在线预约 · 奶油指尖</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=M+PLUS+Rounded+1c:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body class="has-contact-dock">
+  <div class="bg-blobs" aria-hidden="true">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="/" class="logo" data-setting="store_name">奶油指尖</a>
+      <nav>
+        <a href="/" class="nav-link">首页</a>
+        <a href="/works.html" class="nav-link">作品</a>
+        <a href="/booking.html" class="nav-link active">预约</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container booking-page">
+    <div class="section-title">
+      <h2>在线预约</h2>
+      <span class="subtitle">选服务、时间与联系方式</span>
+    </div>
+
+    <div id="booking-form-wrap">
+      <div class="progress-bar" id="progress-bar">
+        <div class="progress-step active" data-step="1">
+          <div class="step-dot">1</div>
+          <span>项目</span>
+        </div>
+        <div class="progress-step" data-step="2">
+          <div class="step-dot">2</div>
+          <span>时间</span>
+        </div>
+        <div class="progress-step" data-step="3">
+          <div class="step-dot">3</div>
+          <span>信息</span>
+        </div>
+      </div>
+
+      <div class="form-step active" data-step="1">
+        <label class="form-label">选择服务项目</label>
+        <p class="form-hint">可多选，款式类价格以实际款式为准</p>
+        <div class="service-select-grid" id="service-grid"></div>
+        <div class="deposit-notice">
+          <span class="notice-emoji">📌</span>
+          <span data-setting="booking_notice">提交预约后店主会通过微信联系您，进一步确认时间与款式。</span>
+        </div>
+        <div class="form-nav">
+          <button type="button" class="btn-primary" id="btn-next-1" style="flex:1">下一步</button>
+        </div>
+      </div>
+
+      <div class="form-step" data-step="2">
+        <label class="form-label" for="booking-date">预约日期</label>
+        <input type="date" id="booking-date" class="date-input" required />
+        <label class="form-label" style="margin-top:24px">预约时段</label>
+        <p class="form-hint" id="time-hint">请选择方便到店的时间段</p>
+        <div class="time-slots" id="time-slots"></div>
+        <div class="form-nav">
+          <button type="button" class="btn-secondary" id="btn-prev-2">上一步</button>
+          <button type="button" class="btn-primary" id="btn-next-2">下一步</button>
+        </div>
+      </div>
+
+      <div class="form-step" data-step="3">
+        <label class="form-label" for="wechat">微信号</label>
+        <p class="form-hint">用于确认预约与沟通款式，请准确填写</p>
+        <input type="text" id="wechat" class="text-input" placeholder="请输入您的微信号" required />
+
+        <label class="form-label" for="notes" style="margin-top:24px">备注（选填）</label>
+        <textarea id="notes" class="textarea-input" placeholder="如：想要的款式风格、参考图说明、是否卸甲等"></textarea>
+
+        <label class="form-label" style="margin-top:24px">参考图（选填）</label>
+        <p class="form-hint">上传 1-3 张款式参考图，支持 JPG / PNG / WEBP，大图将自动压缩</p>
+        <div class="upload-area">
+          <input type="file" id="ref-images-input" accept="image/jpeg,image/jpg,image/png,image/webp" multiple hidden />
+          <button type="button" class="upload-trigger" id="upload-trigger">
+            <span class="upload-trigger-icon">🖼️</span>
+            <span>上传参考图</span>
+          </button>
+          <span class="upload-count" id="upload-count">0 / 3</span>
+        </div>
+        <div class="upload-preview" id="upload-preview"></div>
+
+        <div class="deposit-notice">
+          <span class="notice-emoji">💬</span>
+          <span>提交后请留意微信消息。款式类服务价格以<strong>看图报价</strong>为准。</span>
+        </div>
+
+        <div class="form-nav">
+          <button type="button" class="btn-secondary" id="btn-prev-3">上一步</button>
+          <button type="button" class="btn-primary" id="btn-submit">提交预约</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="success-wrap" class="hidden">
+      <div class="success-card">
+        <div class="success-icon">✓</div>
+        <h2>预约已提交</h2>
+        <p><span data-setting="booking_success">我们会尽快通过微信与您确认时间</span><br />请留意微信消息</p>
+
+        <div class="success-summary">
+          <div class="success-summary-row"><span>预约日期</span><strong id="success-date">-</strong></div>
+          <div class="success-summary-row"><span>预约时段</span><strong id="success-time">-</strong></div>
+          <div class="success-summary-row"><span>联系微信</span><strong id="success-customer-wechat">-</strong></div>
+        </div>
+
+        <div class="success-guide">
+          <h3>建议下一步</h3>
+          <p>可主动添加店主微信，发送预约日期和喜欢的款式图，确认更快。</p>
+          <div class="success-guide-wechat">店主微信：<strong data-setting="contact_wechat">-</strong></div>
+          <div class="success-guide-actions">
+            <button type="button" class="btn-secondary" id="success-copy-wechat">复制店主微信</button>
+            <button type="button" class="btn-secondary" id="success-cancel-booking">取消本次预约</button>
+          </div>
+        </div>
+
+        <a href="/" class="btn-primary">返回首页</a>
+      </div>
+    </div>
+
+    <section class="section cancel-booking-section">
+      <div class="section-title">
+        <h2>取消预约</h2>
+        <span class="subtitle">输入预约日期、时段和微信号，可自助取消</span>
+      </div>
+      <div class="works-admin-form">
+        <label class="form-label" for="cancel-date">预约日期</label>
+        <input type="date" id="cancel-date" class="date-input" />
+
+        <label class="form-label" for="cancel-time" style="margin-top:14px">预约时段</label>
+        <input type="text" id="cancel-time" class="text-input" placeholder="例如：12:00-14:00" />
+
+        <label class="form-label" for="cancel-wechat" style="margin-top:14px">预约微信号</label>
+        <input type="text" id="cancel-wechat" class="text-input" placeholder="填写预约时使用的微信号" />
+
+        <div class="form-nav">
+          <button type="button" class="btn-primary" id="btn-cancel-booking" style="flex:1">确认取消预约</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section cancel-booking-section">
+      <div class="section-title">
+        <h2>我的预约记录</h2>
+        <span class="subtitle">输入微信号可查看最近预约，避免忘记时间</span>
+      </div>
+      <div class="works-admin-form">
+        <label class="form-label" for="lookup-wechat">微信号</label>
+        <input type="text" id="lookup-wechat" class="text-input" placeholder="填写预约时使用的微信号" />
+        <div class="form-nav">
+          <button type="button" class="btn-primary" id="btn-lookup-bookings" style="flex:1">查看我的预约</button>
+        </div>
+        <div id="client-bookings-empty" class="form-hint" style="margin-top:10px">暂无查询结果</div>
+        <div id="client-bookings-list" class="works-admin-list"></div>
+      </div>
+    </section>
+  </main>
+
+  <aside class="contact-dock" id="booking-contact-fixed">
+    <div class="contact-dock-sticker sticker-heart" aria-hidden="true">❤</div>
+    <div class="contact-dock-sticker sticker-star" aria-hidden="true">✦</div>
+    <div class="contact-dock-head">
+      <strong data-setting="contact_title">有问题直接联系我</strong>
+    </div>
+    <div class="contact-dock-body">
+      <div class="contact-dock-qr-wrap">
+        <img id="contact-qr-image" class="contact-dock-qr" alt="微信好友码" hidden />
+      </div>
+      <div class="contact-dock-text">
+        <div>微信：<span data-setting="contact_wechat">-</span></div>
+        <div>电话：<span data-setting="contact_phone">-</span></div>
+        <div class="contact-dock-note" data-setting="contact_note">有需要的话可以直接联系我哦</div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="error-toast" id="toast"></div>
+
+  <script src="/js/data.js"></script>
+  <script src="/js/site-settings.js"></script>
+  <script src="/js/image-upload.js"></script>
+  <script src="/js/booking.js"></script>
+</body>
+</html>

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="奶油指尖美甲工作室 — 专业美甲预约" />
+  <title>奶油指尖 · 美甲预约</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=M+PLUS+Rounded+1c:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body class="has-contact-dock has-fixed-cta">
+  <div class="bg-blobs" aria-hidden="true">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="/" class="logo" data-setting="store_name">奶油指尖</a>
+      <nav>
+        <a href="#menu" class="nav-link active">价目</a>
+        <a href="/works.html" class="nav-link">作品</a>
+        <a href="/booking.html" class="nav-link">预约</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="hero-badge" data-setting="hero_badge">预约制 · 一客一消毒</div>
+      <h1>
+        <span data-setting="hero_title">奶油指尖</span>
+        <span data-setting="hero_subtitle">NAIL STUDIO</span>
+      </h1>
+      <p class="hero-desc"><span data-setting="hero_desc">温柔秋日氛围 · 专属指尖美学</span><br />在线选服务与时间，微信确认预约</p>
+      <a href="/booking.html" class="btn-primary">立即预约 ✦</a>
+    </section>
+
+    <div class="features-strip">
+      <div class="feature-pill" style="animation-delay: 0.1s">
+        <span class="icon">✨</span>
+        精致款式
+      </div>
+      <div class="feature-pill" style="animation-delay: 0.15s">
+        <span class="icon">🛡️</span>
+        一客一消毒
+      </div>
+      <div class="feature-pill" style="animation-delay: 0.2s">
+        <span class="icon">💝</span>
+        七天免费补
+      </div>
+    </div>
+
+    <section class="section" id="menu">
+      <div class="section-title">
+        <h2>服务项目</h2>
+        <span class="subtitle">透明定价，款式以实际为准</span>
+      </div>
+      <div class="price-grid" id="price-list"></div>
+    </section>
+
+    <section class="section"> 
+      <div class="section-title">
+        <h2>店铺须知</h2>
+      </div>
+      <div class="rules-card">
+        <ul class="rules-list" data-setting="rules_list">
+          <li>
+            <span class="rule-num">1</span>
+            <span>七天内非人为损坏可免费修补</span>
+          </li>
+          <li>
+            <span class="rule-num">2</span>
+            <span>款式看图收费，复杂款式价格另议</span>
+          </li>
+          <li>
+            <span class="rule-num">3</span>
+            <span>需要提前预约，空降不保证有位</span>
+          </li>
+          <li>
+            <span class="rule-num">4</span>
+            <span>提交后店主会通过微信确认时间</span>
+          </li>
+          <li>
+            <span class="rule-num">5</span>
+            <span>工具一客一消毒，请放心使用</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-title">
+        <h2>预约流程</h2>
+        <span class="subtitle">四步完成在线预约</span>
+      </div>
+      <div class="rules-card">
+        <ul class="rules-list">
+          <li>
+            <span class="rule-num">①</span>
+            <span>选择服务项目（可多选）</span>
+          </li>
+          <li>
+            <span class="rule-num">②</span>
+            <span>选择预约日期与时间段</span>
+          </li>
+          <li>
+            <span class="rule-num">③</span>
+            <span>填写微信号与备注需求</span>
+          </li>
+          <li>
+            <span class="rule-num">④</span>
+            <span>提交后店主将通过微信确认</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <aside class="contact-dock" id="booking-contact-fixed">
+    <div class="contact-dock-sticker sticker-heart" aria-hidden="true">❤</div>
+    <div class="contact-dock-sticker sticker-star" aria-hidden="true">✦</div>
+    <div class="contact-dock-head">
+      <strong data-setting="contact_title">有问题直接联系我</strong>
+    </div>
+    <div class="contact-dock-body">
+      <div class="contact-dock-qr-wrap">
+        <img id="contact-qr-image" class="contact-dock-qr" alt="微信好友码" hidden />
+      </div>
+      <div class="contact-dock-text">
+        <div>微信：<span data-setting="contact_wechat">-</span></div>
+        <div>电话：<span data-setting="contact_phone">-</span></div>
+        <div class="contact-dock-note" data-setting="contact_note">有需要的话可以直接联系我哦</div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="fixed-cta">
+    <a href="/booking.html" class="btn-primary">在线预约 ✦</a>
+  </div>
+
+  <footer class="site-footer">
+  <p>奶油指尖美甲工作室</p>
+  <p style="margin-top:6px"><a href="/admin.html">店主后台</a></p>
+  </footer>
+
+  <script src="/js/data.js"></script>
+  <script src="/js/site-settings.js"></script>
+  <script>
+    const grid = document.getElementById('price-list');
+    const icons = { '本甲': '💅', '甲片': '✨', '卸甲': '🌸', '建构': '💎', '甲膜延长': '🦋', '手部护理': '🤍' };
+    function renderServices(list) {
+      grid.innerHTML = '';
+      list.forEach(cat => {
+        const el = document.createElement('div');
+        el.className = 'price-category';
+        el.innerHTML = `
+          <div class="category-header">
+            <div class="category-icon">${icons[cat.category] || '✦'}</div>
+            <h3>${cat.category}</h3>
+          </div>
+          <ul class="price-items">
+            ${cat.items.map(i => `
+              <li class="price-item">
+                <span class="price-name">${i.name}</span>
+                <span class="price-value">¥${i.price}${i.suffix || ''}</span>
+              </li>
+            `).join('')}
+          </ul>
+        `;
+        grid.appendChild(el);
+      });
+    }
+
+    async function loadServices() {
+      try {
+        const res = await fetch('/api/services');
+        const data = await res.json();
+        if (res.ok && Array.isArray(data) && data.length) {
+          renderServices(data);
+          return;
+        }
+      } catch {}
+      renderServices(SERVICES);
+    }
+
+    loadServices();
+  </script>
+</body>
+</html>
