@@ -1,7 +1,7 @@
 {
   "name": "nail-studio-booking",
   "version": "1.0.0",
-  "description": "美甲店在线预约系统",
+  "description": "Nail studio booking website",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

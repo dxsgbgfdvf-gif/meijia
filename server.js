@@ -8,7 +8,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'meijia2025';
 
-const dataDir = path.join(__dirname, 'data');
+const dataDir = process.env.DATA_DIR || (process.env.VERCEL ? '/tmp/data' : path.join(__dirname, 'data'));
 const uploadsDir = path.join(dataDir, 'uploads');
 const worksDir = path.join(dataDir, 'works');
 const settingsDir = path.join(dataDir, 'settings');
@@ -1102,7 +1102,11 @@ app.use('/works', express.static(worksDir));
 app.use('/settings', express.static(settingsDir));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.listen(PORT, () => {
-  console.log(`缇庣敳棰勭害绔欒繍琛屼簬 http://localhost:${PORT}`);
-});
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`美甲预约站运行于 http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;
 
