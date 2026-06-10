@@ -2,13 +2,14 @@
 const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
-const Database = require('better-sqlite3');
+const isVercel = Boolean(process.env.VERCEL);
+const Database = isVercel ? null : require('better-sqlite3');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'meijia2025';
 
-const dataDir = process.env.DATA_DIR || (process.env.VERCEL ? '/tmp/data' : path.join(__dirname, 'data'));
+const dataDir = process.env.DATA_DIR || (isVercel ? '/tmp/data' : path.join(__dirname, 'data'));
 const uploadsDir = path.join(dataDir, 'uploads');
 const worksDir = path.join(dataDir, 'works');
 const settingsDir = path.join(dataDir, 'settings');
@@ -17,7 +18,307 @@ fs.mkdirSync(uploadsDir, { recursive: true });
 fs.mkdirSync(worksDir, { recursive: true });
 fs.mkdirSync(settingsDir, { recursive: true });
 
-const db = new Database(path.join(dataDir, 'bookings.db'));
+function createMemoryDb() {
+  const state = {
+    bookings: [],
+    works: [],
+    services: [],
+    site_settings: [],
+    nextBookingId: 1,
+    nextWorkId: 1,
+    nextServiceId: 1,
+  };
+
+  const columns = {
+    bookings: ['id', 'services', 'date', 'time', 'wechat', 'notes', 'images', 'status', 'created_at'],
+    works: ['id', 'title', 'tag', 'description', 'image', 'active', 'sort_order', 'created_at'],
+    site_settings: [
+      'id',
+      'store_name',
+      'hero_badge',
+      'hero_title',
+      'hero_subtitle',
+      'hero_desc',
+      'booking_notice',
+      'booking_success',
+      'works_intro',
+      'business_start',
+      'business_end',
+      'slot_minutes',
+      'custom_slots_json',
+      'weekly_closed_json',
+      'closed_dates_json',
+      'special_open_json',
+      'contact_title',
+      'contact_wechat',
+      'contact_phone',
+      'contact_note',
+      'contact_qr',
+      'rules_json',
+      'updated_at',
+    ],
+    services: ['id', 'category', 'name', 'price', 'suffix', 'active', 'sort_order', 'created_at'],
+  };
+
+  const now = () => new Date().toISOString().slice(0, 19).replace('T', ' ');
+  const clone = (value) => (value == null ? value : JSON.parse(JSON.stringify(value)));
+  const orderServices = (rows) =>
+    rows.slice().sort((a, b) => Number(a.sort_order) - Number(b.sort_order) || Number(a.id) - Number(b.id));
+  const orderWorks = (rows) =>
+    rows.slice().sort((a, b) => Number(a.sort_order) - Number(b.sort_order) || Number(b.id) - Number(a.id));
+  const orderBookings = (rows) =>
+    rows
+      .slice()
+      .sort((a, b) => String(b.date).localeCompare(String(a.date)) || String(b.time).localeCompare(String(a.time)));
+
+  return {
+    exec() {},
+    transaction(fn) {
+      return (...args) => fn(...args);
+    },
+    prepare(sql) {
+      const normalized = String(sql).replace(/\s+/g, ' ').trim();
+      const lower = normalized.toLowerCase();
+
+      return {
+        all(...params) {
+          if (lower.startsWith('pragma table_info')) {
+            const table = normalized.match(/\(([^)]+)\)/)?.[1];
+            return (columns[table] || []).map((name) => ({ name }));
+          }
+          if (lower.includes('from services')) {
+            const rows = lower.includes('where active = 1')
+              ? state.services.filter((row) => Number(row.active) === 1)
+              : state.services;
+            return clone(orderServices(rows));
+          }
+          if (lower.includes('from works where active = 1')) {
+            return clone(orderWorks(state.works.filter((row) => Number(row.active) === 1)));
+          }
+          if (lower.includes('from works order by')) {
+            return clone(orderWorks(state.works));
+          }
+          if (lower.includes('from bookings where date = ? and status != ?')) {
+            const [date, status] = params;
+            return clone(state.bookings.filter((row) => row.date === date && row.status !== status));
+          }
+          if (lower.includes('from bookings order by date desc')) {
+            return clone(orderBookings(state.bookings));
+          }
+          if (lower.includes('from bookings order by date desc, time desc, id desc')) {
+            return clone(orderBookings(state.bookings));
+          }
+          if (lower.includes('from bookings')) {
+            return clone(orderBookings(state.bookings));
+          }
+          return [];
+        },
+        get(...params) {
+          if (lower.startsWith('pragma table_info')) return this.all(...params)[0];
+          if (lower.includes('select id from site_settings')) {
+            const row = state.site_settings.find((item) => item.id === 1);
+            return row ? { id: 1 } : undefined;
+          }
+          if (lower.includes('select * from site_settings')) {
+            return clone(state.site_settings.find((item) => item.id === 1));
+          }
+          if (lower.includes('select count(*) as total from services')) {
+            return { total: state.services.length };
+          }
+          if (lower.includes('from bookings where date = ? and time = ? and status != ?')) {
+            const [date, time, status, excludeId] = params;
+            return clone(
+              state.bookings.find(
+                (row) =>
+                  row.date === date &&
+                  row.time === time &&
+                  row.status !== status &&
+                  (excludeId == null || Number(row.id) !== Number(excludeId))
+              )
+            );
+          }
+          if (lower.includes('from bookings where id = ?')) {
+            const row = state.bookings.find((item) => Number(item.id) === Number(params[0]));
+            return clone(row);
+          }
+          if (lower.includes('from works where id = ?')) {
+            const row = state.works.find((item) => Number(item.id) === Number(params[0]));
+            return clone(row);
+          }
+          if (lower.includes('select image from works where id = ?')) {
+            const row = state.works.find((item) => Number(item.id) === Number(params[0]));
+            return row ? { image: row.image || '' } : undefined;
+          }
+          if (lower.includes('from services where id = ?')) {
+            const row = state.services.find((item) => Number(item.id) === Number(params[0]));
+            return clone(row);
+          }
+          return this.all(...params)[0];
+        },
+        run(...params) {
+          if (lower.startsWith('insert into site_settings')) {
+            const row = {
+              id: 1,
+              store_name: params[0],
+              hero_badge: params[1],
+              hero_title: params[2],
+              hero_subtitle: params[3],
+              hero_desc: params[4],
+              booking_notice: params[5],
+              booking_success: params[6],
+              works_intro: params[7],
+              business_start: params[8],
+              business_end: params[9],
+              slot_minutes: params[10],
+              custom_slots_json: params[11],
+              weekly_closed_json: params[12],
+              closed_dates_json: params[13],
+              special_open_json: params[14],
+              contact_title: params[15],
+              contact_wechat: params[16],
+              contact_phone: params[17],
+              contact_note: params[18],
+              contact_qr: params[19],
+              rules_json: params[20],
+              updated_at: now(),
+            };
+            state.site_settings = [row];
+            return { changes: 1, lastInsertRowid: 1 };
+          }
+          if (lower.startsWith('update site_settings')) {
+            const current = state.site_settings[0] || { id: 1 };
+            Object.assign(current, {
+              store_name: params[0],
+              hero_badge: params[1],
+              hero_title: params[2],
+              hero_subtitle: params[3],
+              hero_desc: params[4],
+              booking_notice: params[5],
+              booking_success: params[6],
+              works_intro: params[7],
+              special_open_json: params[8],
+              weekly_closed_json: '[]',
+              closed_dates_json: '[]',
+              contact_title: params[9],
+              contact_wechat: params[10],
+              contact_phone: params[11],
+              contact_note: params[12],
+              contact_qr: params[13],
+              rules_json: params[14],
+              updated_at: now(),
+            });
+            state.site_settings = [current];
+            return { changes: 1 };
+          }
+          if (lower.startsWith('insert into services')) {
+            const row = {
+              id: state.nextServiceId++,
+              category: params[0],
+              name: params[1],
+              price: params[2],
+              suffix: params[3] || '',
+              active: params[4] ? 1 : 0,
+              sort_order: Number(params[5]) || 0,
+              created_at: now(),
+            };
+            state.services.push(row);
+            return { changes: 1, lastInsertRowid: row.id };
+          }
+          if (lower.startsWith('update services')) {
+            const row = state.services.find((item) => Number(item.id) === Number(params[6]));
+            if (row) {
+              Object.assign(row, {
+                category: params[0],
+                name: params[1],
+                price: params[2],
+                suffix: params[3] || '',
+                active: params[4] ? 1 : 0,
+                sort_order: Number(params[5]) || 0,
+              });
+            }
+            return { changes: row ? 1 : 0 };
+          }
+          if (lower.startsWith('delete from services')) {
+            const before = state.services.length;
+            state.services = state.services.filter((row) => Number(row.id) !== Number(params[0]));
+            return { changes: before - state.services.length };
+          }
+          if (lower.startsWith('insert into bookings')) {
+            const row = {
+              id: state.nextBookingId++,
+              services: params[0],
+              date: params[1],
+              time: params[2],
+              wechat: params[3],
+              notes: params[4] || '',
+              images: params[5] || '[]',
+              status: params[6] || DEFAULT_STATUS,
+              created_at: now(),
+            };
+            state.bookings.push(row);
+            return { changes: 1, lastInsertRowid: row.id };
+          }
+          if (lower.startsWith('update bookings set images')) {
+            const row = state.bookings.find((item) => Number(item.id) === Number(params[1]));
+            if (row) row.images = params[0];
+            return { changes: row ? 1 : 0 };
+          }
+          if (lower.startsWith('update bookings set status')) {
+            const row = state.bookings.find((item) => Number(item.id) === Number(params[1]));
+            if (row) row.status = params[0];
+            return { changes: row ? 1 : 0 };
+          }
+          if (lower.startsWith('delete from bookings')) {
+            const before = state.bookings.length;
+            state.bookings = state.bookings.filter((row) => Number(row.id) !== Number(params[0]));
+            return { changes: before - state.bookings.length };
+          }
+          if (lower.startsWith('insert into works')) {
+            const row = {
+              id: state.nextWorkId++,
+              title: params[0],
+              tag: params[1] || '',
+              description: params[2] || '',
+              image: params[3] || '',
+              active: params[4] ? 1 : 0,
+              sort_order: Number(params[5]) || 0,
+              created_at: now(),
+            };
+            state.works.push(row);
+            return { changes: 1, lastInsertRowid: row.id };
+          }
+          if (lower.startsWith('update works set image')) {
+            const row = state.works.find((item) => Number(item.id) === Number(params[1]));
+            if (row) row.image = params[0];
+            return { changes: row ? 1 : 0 };
+          }
+          if (lower.startsWith('update works set title')) {
+            const row = state.works.find((item) => Number(item.id) === Number(params[6]));
+            if (row) {
+              Object.assign(row, {
+                title: params[0],
+                tag: params[1] || '',
+                description: params[2] || '',
+                image: params[3] || '',
+                active: params[4] ? 1 : 0,
+                sort_order: Number(params[5]) || 0,
+              });
+            }
+            return { changes: row ? 1 : 0 };
+          }
+          if (lower.startsWith('delete from works')) {
+            const before = state.works.length;
+            state.works = state.works.filter((row) => Number(row.id) !== Number(params[0]));
+            return { changes: before - state.works.length };
+          }
+          return { changes: 0, lastInsertRowid: 0 };
+        },
+      };
+    },
+  };
+}
+
+const db = isVercel ? createMemoryDb() : new Database(path.join(dataDir, 'bookings.db'));
 db.exec(`
   CREATE TABLE IF NOT EXISTS bookings (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
